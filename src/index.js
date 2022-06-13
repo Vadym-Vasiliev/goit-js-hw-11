@@ -1,5 +1,8 @@
 import { serverRequest } from './search';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { renderCard } from './renderCard';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+import SimpleLightbox from 'simplelightbox';
 
 const refs = {
   searchForm: document.querySelector('#search-form'),
@@ -18,22 +21,22 @@ function renderGallery(event) {
   }
   serverRequest(text)
     .then(response => {
-      console.log(response);
-      renderInterface();
+      renderInterface(response);
     })
     .catch(error => {
       Notify.warning(
         'Sorry, there are no images matching your search query. Please try again.'
       );
     });
-
-  console.log(text);
 }
 
 function renderInterface(response) {
   const markup = renderCard(response);
-  refs.gallery.insertAdjacentHTML('beforeend', markup);
+  refs.gallery.insertAdjacentHTML('afterbegin', markup);
+  console.log(markup);
 }
+
+let galleryBox = new SimpleLightbox('gallery a');
 // webformatURL - посилання на маленьке зображення для списку карток.
 // largeImageURL - посилання на велике зображення.
 // tags - рядок з описом зображення. Підійде для атрибуту alt.
