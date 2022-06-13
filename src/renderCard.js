@@ -11,24 +11,29 @@ export function renderCard(response) {
         comments,
         downloads,
       }) => `<div class="photo-card">
-  <a href="${largeImageURL}">
-  <img src="${webformatURL}" alt="${tags}" loading="lazy" />
-  </a>
+  <a class="link" href="${largeImageURL}">
+  <img src="${webformatURL}" class="img" alt="${tags}" loading="lazy" />
   <div class="info">
     <p class="info-item">
-      <b>Likes ${likes}</b>
+     <b>Likes</b><br>
+      <b class="bold-text">${likes}</b>
     </p>
     <p class="info-item">
-      <b>Views ${views}</b>
+     <b>Views</b><br>
+      <b class="bold-text"> ${views}</b>
     </p>
     <p class="info-item">
-      <b>Comments ${comments}</b>
+     <b>Comments</b><br>
+      <b class="bold-text"> ${comments}</b>
     </p>
     <p class="info-item">
-      <b>Downloads ${downloads}</b>
+     <b>Downloads</b><br>
+      <b class="bold-text"> ${downloads}</b>
     </p>
   </div>
-</div>; 
+  </a>
+  
+</div>
 `
     )
     .join('');

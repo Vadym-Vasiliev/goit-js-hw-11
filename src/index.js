@@ -13,7 +13,6 @@ refs.searchForm.addEventListener('submit', renderGallery);
 
 function renderGallery(event) {
   event.preventDefault();
-
   const text = refs.searchForm.elements.searchQuery.value.trim();
 
   if (!text) {
@@ -22,6 +21,8 @@ function renderGallery(event) {
   serverRequest(text)
     .then(response => {
       renderInterface(response);
+
+      let galleryBox = new SimpleLightbox('.gallery a', {});
     })
     .catch(error => {
       Notify.warning(
@@ -36,7 +37,6 @@ function renderInterface(response) {
   console.log(markup);
 }
 
-let galleryBox = new SimpleLightbox('gallery a');
 // webformatURL - посилання на маленьке зображення для списку карток.
 // largeImageURL - посилання на велике зображення.
 // tags - рядок з описом зображення. Підійде для атрибуту alt.
