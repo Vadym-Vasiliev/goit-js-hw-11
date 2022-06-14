@@ -7,34 +7,44 @@ import SimpleLightbox from 'simplelightbox';
 const refs = {
   searchForm: document.querySelector('#search-form'),
   gallery: document.querySelector('.gallery'),
+  loadMoreBtn: document.querySelector('.load-more'),
 };
 
-refs.searchForm.addEventListener('submit', renderGallery);
+refs.searchForm.addEventListener('submit', onSubmit);
+refs.loadMoreBtn.addEventListener('click', getPageAfterClickBtn);
+refs.loadMoreBtn.setAttribute('hidden', 'hidden');
 
-function renderGallery(event) {
-  event.preventDefault();
-  const text = refs.searchForm.elements.searchQuery.value.trim();
+async function renderGallery(isNewRequest) {
+  try {
+    const text = refs.searchForm.elements.searchQuery.value.trim();
 
-  if (!text) {
-    return;
+    if (!text) {
+      return;
+    }
+    const response = await serverRequest(text, isNewRequest);
+
+    renderCard(refs.gallery, response);
+    let galleryBox = new SimpleLightbox('.gallery a', {});
+  } catch (error) {
+    Notify.warning(
+      'Sorry, there are no images matching your search query. Please try again.'
+    );
   }
-  serverRequest(text)
-    .then(response => {
-      renderInterface(response);
-
-      let galleryBox = new SimpleLightbox('.gallery a', {});
-    })
-    .catch(error => {
-      Notify.warning(
-        'Sorry, there are no images matching your search query. Please try again.'
-      );
-    });
 }
 
-function renderInterface(response) {
-  const markup = renderCard(response);
-  refs.gallery.insertAdjacentHTML('afterbegin', markup);
-  console.log(markup);
+function setAddAttribute(searchBtn, loadBtn) {
+  searchBtn.setAddAttribute('hidden', 'hidden');
+  loadBtn.removeAddAttribute('hidden', 'hidden');
+}
+
+function getPageAfterClickBtn() {
+  renderGallery(false);
+}
+
+function onSubmit(event, response) {
+  event.preventDefault();
+  refs.gallery.innerHTML = '';
+  renderGallery(true);
 }
 
 // webformatURL - посилання на маленьке зображення для списку карток.

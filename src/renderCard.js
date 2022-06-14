@@ -1,6 +1,11 @@
-export function renderCard(response) {
-  console.log(response);
-  return response.hits
+export function renderCard(container, response) {
+  if (response.hits.length === 0) {
+    Notify.warning(
+      'Sorry, there are no images matching your search query. Please try again.'
+    );
+    return;
+  }
+  const markup = response.hits
     .map(
       ({
         webformatURL,
@@ -37,4 +42,5 @@ export function renderCard(response) {
 `
     )
     .join('');
+  container.insertAdjacentHTML('beforeend', markup);
 }
