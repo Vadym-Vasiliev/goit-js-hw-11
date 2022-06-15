@@ -12,9 +12,9 @@ const refs = {
 
 refs.searchForm.addEventListener('submit', onSubmit);
 refs.loadMoreBtn.addEventListener('click', getPageAfterClickBtn);
-refs.loadMoreBtn.setAttribute('hidden', 'hidden');
 
-async function renderGallery(isNewRequest) {
+async function renderGallery(isNewRequest, page) {
+  page += 1;
   try {
     const text = refs.searchForm.elements.searchQuery.value.trim();
 
@@ -24,28 +24,61 @@ async function renderGallery(isNewRequest) {
     const response = await serverRequest(text, isNewRequest);
 
     renderCard(refs.gallery, response);
+
     let galleryBox = new SimpleLightbox('.gallery a', {});
+
+    Notify.success(`Hooray! We found ${response.totalHits} images.`);
   } catch (error) {
     Notify.warning(
-      'Sorry, there are no images matching your search query. Please try again.'
+      "We're sorry, but you've reached the end of search results."
     );
   }
-}
-
-function setAddAttribute(searchBtn, loadBtn) {
-  searchBtn.setAddAttribute('hidden', 'hidden');
-  loadBtn.removeAddAttribute('hidden', 'hidden');
-}
-
-function getPageAfterClickBtn() {
-  renderGallery(false);
 }
 
 function onSubmit(event, response) {
   event.preventDefault();
   refs.gallery.innerHTML = '';
   renderGallery(true);
+  removeHiddenBtn();
 }
+
+function getPageAfterClickBtn(response) {
+  const totalHits = response.totalHits;
+  console.log(totalHits);
+  addHiddenBtn();
+  renderGallery(false);
+}
+
+function addHiddenBtn() {
+  refs.loadMoreBtn.classList.add('is-hidden');
+  refs.loadMoreBtn.classList.remove('is-hidden');
+}
+
+function removeHiddenBtn() {
+  refs.loadMoreBtn.classList.remove('is-hidden');
+}
+
+function theEndBtn(response) {
+  if (response.total < 0) {
+    Notiflix.Notify.failure(
+      "We're sorry, but you've reached the end of search results."
+    );
+    refs.loadMoreBtn.classList.add('is-hidden');
+    return;
+  }
+}
+
+// function checkEndOfSearch() {
+//   console.log(newApi.total);
+//   if (newApi.total < 0) {
+//     Notiflix.Notify.failure(
+//       "We're sorry, but you've reached the end of search results."
+//     );
+//     loadBtnStatus.hidden();
+//     observer.disconnect(refs.footer);
+//     return;
+//   }
+// }
 
 // webformatURL - посилання на маленьке зображення для списку карток.
 // largeImageURL - посилання на велике зображення.
