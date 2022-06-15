@@ -23,7 +23,7 @@ async function renderGallery(isNewRequest) {
       return;
     }
 
-    const response = await serverRequest(text, isNewRequest);
+    const response = await serverRequest(text, isNewRequest, page);
     if (isNewRequest && response.totalHits !== 0) {
       page = 1;
       Notify.success(`Hooray! We found ${response.totalHits} images.`);
