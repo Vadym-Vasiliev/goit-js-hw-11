@@ -1,8 +1,8 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import axios from 'axios';
 import { refs } from './index';
-axios.defaults.baseURL = 'https://pixabay.com';
 
+axios.defaults.baseURL = 'https://pixabay.com';
 let page = 1;
 const per_page = 40;
 const KEY = '28023966-838a4e1daf9ae1f3637aa678a';

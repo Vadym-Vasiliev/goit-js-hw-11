@@ -4,7 +4,7 @@ import { renderCard } from './renderCard';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import SimpleLightbox from 'simplelightbox';
 
-const refs = {
+export const refs = {
   searchForm: document.querySelector('#search-form'),
   gallery: document.querySelector('.gallery'),
   loadMoreBtn: document.querySelector('.load-more'),
@@ -35,6 +35,7 @@ async function renderGallery(isNewRequest) {
       Notify.warning(
         'Sorry, there are no images matching your search query. Please try again.'
       );
+      addLoadMoreBtn(false);
     }
   } catch (error) {
     console.log(error);
@@ -45,11 +46,11 @@ function onSubmit(event) {
   event.preventDefault();
   refs.gallery.innerHTML = '';
   renderGallery(true);
-  addHiddenBtn(false);
+  addLoadMoreBtn(false);
 }
 
 function getPageAfterClickBtn() {
-  addHiddenBtn(false);
+  addLoadMoreBtn(false);
   renderGallery(false);
 }
 
@@ -58,7 +59,7 @@ function getPageAfterClickBtn() {
 //   refs.loadMoreBtn.classList.remove('is-hidden');
 // }
 
-function addHiddenBtn(flag) {
+function addLoadMoreBtn(flag) {
   if (flag) {
     refs.loadMoreBtn.classList.remove('is-hidden');
   } else {
