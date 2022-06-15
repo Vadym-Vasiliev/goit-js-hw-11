@@ -1,8 +1,5 @@
-export function renderCard(container, response, page) {
-  if (response.hits.length === 0) {
-    Notify.warning(
-      'Sorry, there are no images matching your search query. Please try again.'
-    );
+export function renderCard(container, response) {
+  if (response.hits === 0) {
     return;
   }
   const markup = response.hits

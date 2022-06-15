@@ -13,58 +13,56 @@ const refs = {
 refs.searchForm.addEventListener('submit', onSubmit);
 refs.loadMoreBtn.addEventListener('click', getPageAfterClickBtn);
 
-async function renderGallery(isNewRequest, page) {
-  page += 1;
+let galleryBox = new SimpleLightbox('.gallery a', {});
+
+async function renderGallery(isNewRequest) {
   try {
     const text = refs.searchForm.elements.searchQuery.value.trim();
 
     if (!text) {
       return;
     }
-    const response = await serverRequest(text, isNewRequest);
 
+    const response = await serverRequest(text, isNewRequest);
+    if (isNewRequest && response.totalHits !== 0) {
+      page = 1;
+      Notify.success(`Hooray! We found ${response.totalHits} images.`);
+    }
     renderCard(refs.gallery, response);
 
-    let galleryBox = new SimpleLightbox('.gallery a', {});
-
-    Notify.success(`Hooray! We found ${response.totalHits} images.`);
+    galleryBox.refresh();
+    if (response.total === 0) {
+      Notify.warning(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+    }
   } catch (error) {
-    Notify.warning(
-      "We're sorry, but you've reached the end of search results."
-    );
+    console.log(error);
   }
 }
 
-function onSubmit(event, response) {
+function onSubmit(event) {
   event.preventDefault();
   refs.gallery.innerHTML = '';
   renderGallery(true);
-  removeHiddenBtn();
+  addHiddenBtn(false);
 }
 
-function getPageAfterClickBtn(response) {
-  const totalHits = response.totalHits;
-  console.log(totalHits);
-  addHiddenBtn();
+function getPageAfterClickBtn() {
+  addHiddenBtn(false);
   renderGallery(false);
 }
 
-function addHiddenBtn() {
-  refs.loadMoreBtn.classList.add('is-hidden');
-  refs.loadMoreBtn.classList.remove('is-hidden');
-}
+// function addHiddenBtn() {
+//   refs.loadMoreBtn.classList.add('is-hidden');
+//   refs.loadMoreBtn.classList.remove('is-hidden');
+// }
 
-function removeHiddenBtn() {
-  refs.loadMoreBtn.classList.remove('is-hidden');
-}
-
-function theEndBtn(response) {
-  if (response.total < 0) {
-    Notiflix.Notify.failure(
-      "We're sorry, but you've reached the end of search results."
-    );
+function addHiddenBtn(flag) {
+  if (flag) {
+    refs.loadMoreBtn.classList.remove('is-hidden');
+  } else {
     refs.loadMoreBtn.classList.add('is-hidden');
-    return;
   }
 }
 

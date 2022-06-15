@@ -1,4 +1,6 @@
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import axios from 'axios';
+import { refs } from './index';
 axios.defaults.baseURL = 'https://pixabay.com';
 
 let page = 1;
@@ -9,7 +11,7 @@ async function serverRequest(name, isNewRequest) {
   if (isNewRequest) {
     page = 1;
   }
-  const response = await axios.get('/api', {
+  const response = await axios.get('/api/', {
     params: {
       key: KEY,
       q: `${name}`,
@@ -24,6 +26,18 @@ async function serverRequest(name, isNewRequest) {
   if (!response) {
     return;
   }
+
+  const totalPage = Math.ceil(response.data.totalHits / per_page);
+
+  if (page === totalPage) {
+    refs.loadMoreBtn.classList.add('is-hidden');
+    Notify.warning(
+      "We're sorry, but you've reached the end of search results."
+    );
+  } else {
+    refs.loadMoreBtn.classList.remove('is-hidden');
+  }
+
   page += 1;
   return response.data;
 }
